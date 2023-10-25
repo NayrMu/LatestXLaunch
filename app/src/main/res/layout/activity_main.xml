@@ -9,86 +9,16 @@
 
 
 
-    <Button
-        android:id="@+id/randomButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh"
-        android:textColor="#efefef"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9"/>
 
-    <ImageView
-        android:id="@+id/patchImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/missionList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        android:src="@drawable/spacexlogo" />
-    <TextView
-        android:id="@+id/missionNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mission"
-        android:textColor="#efefef"
-        android:textSize="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/patchImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:id="@+id/dateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date"
-        android:textColor="#efefef"
-        android:textSize="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/missionNameText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:id="@+id/launchVehicleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vehicle"
-        android:textColor="#efefef"
-        android:textSize="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/dateText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:id="@+id/launchLocaleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Location"
-        android:textColor="#efefef"
-        android:textSize="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/launchVehicleText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:id="@+id/launchDescriptionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="#efefef"
-        android:textSize="20dp"
-        android:paddingLeft="35dp"
-        android:paddingRight="35dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/launchLocaleText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"/>
+
+
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
