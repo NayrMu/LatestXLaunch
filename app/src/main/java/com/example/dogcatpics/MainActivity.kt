@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.codepath.asynchttpclient.AsyncHttpClient
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
@@ -23,24 +25,40 @@ class MainActivity : AppCompatActivity() {
     var earliestLaunchLocation: String? = null
     var earliestLaunchDescription: String? = null
 
+    private lateinit var spaceAdapter: SpaceAdapter
+    private val missionList = mutableListOf<MissionData>()
+
+    private lateinit var rvMissions: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var button = binding.randomButton;
-        var imageView = binding.patchImage;
-        refresh(button, imageView);
+        rvMissions = binding.missionList
+
+        // Initialize the SpaceAdapter (you can do this here) but don't set it yet
+        spaceAdapter = SpaceAdapter(missionList)
+
+        // Set a layout manager for your RecyclerView (e.g., LinearLayoutManager)
+        val layoutManager = LinearLayoutManager(this)
+        rvMissions.layoutManager = layoutManager
+
+        // Attach the adapter to the RecyclerView
+        rvMissions.adapter = spaceAdapter
+
         getJSONStrs();
 
     }
     private fun getJSONStrs() {
         val client = AsyncHttpClient()
-        client["https://fdo.rocketlaunch.live/json/launches/next/5", object : JsonHttpResponseHandler() {
-            override fun onSuccess(statusCode: Int, headers: Headers, json: JsonHttpResponseHandler.JSON) {
+        client.get("https://fdo.rocketlaunch.live/json/launches/next/5", object : JsonHttpResponseHandler() {
+            override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
                 Log.d("Dawg", "response successful$json")
-                // Iterate through the array to find the earliest launch
+                // Clear previous mission data
+                missionList.clear()
+
                 val resultArray = json.jsonObject.getJSONArray("result")
                 for (i in 0 until resultArray.length()) {
                     val launchObject = resultArray.getJSONObject(i)
@@ -49,40 +67,29 @@ class MainActivity : AppCompatActivity() {
                     val launchVehicle = launchObject.getJSONObject("vehicle").getString("name")
                     val launchLocale = launchObject.getJSONObject("pad").getJSONObject("location").getString("name")
                     val launchDescription = launchObject.getString("launch_description")
-                    if (launchTime < earliestLaunchTime) {
-                        earliestLaunchTime = launchTime
-                        earliestLaunchName = launchName
-                        earliestLaunchVehicleName = launchVehicle
-                        earliestLaunchLocation = launchLocale
-                        earliestLaunchDescription = launchDescription
-                    }
+
+                    // Create a MissionData object and add it to the list
+                    val missionData = MissionData(
+                        name = launchName,
+                        date = launchTime,
+                        vehicle = launchVehicle,
+                        location = launchLocale,
+                        description = launchDescription
+                    )
+                    missionList.add(missionData)
                 }
+                // Initialize the SpaceAdapter and set it as the adapter for the RecyclerView
+                spaceAdapter = SpaceAdapter(missionList)
+                rvMissions.adapter = spaceAdapter
+
+                // Notify the adapter that the data has changed
+                spaceAdapter.notifyDataSetChanged()
             }
 
-            override fun onFailure(
-                statusCode: Int,
-                headers: Headers?,
-                errorResponse: String,
-                throwable: Throwable?
-            ) {
+            override fun onFailure(statusCode: Int, headers: Headers?, errorResponse: String, throwable: Throwable?) {
                 Log.d("Dog Error", errorResponse)
             }
-        }]
-    }
-    private fun refresh(button: Button, imageView: ImageView) {
-        button.setOnClickListener {
-            getJSONStrs()
-            binding.missionNameText.setText(earliestLaunchName)
-            binding.dateText.setText(unixTimeToDateString(earliestLaunchTime))
-            binding.launchVehicleText.setText(earliestLaunchVehicleName)
-            binding.launchLocaleText.setText(earliestLaunchLocation)
-            binding.launchDescriptionText.setText(earliestLaunchDescription)
-        }
-    }
-    fun unixTimeToDateString(unixTime: Long): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val date = Date(unixTime * 1000)
-        return sdf.format(date)
+        })
     }
 
 }
